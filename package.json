@@ -1,0 +1,24 @@
+{
+  "name": "kiosk",
+  "version": "1.0.0",
+  "description": "wizard101 pet kiosk",
+  "main": "kiosk.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdamElaoud/kiosk.git"
+  },
+  "author": "Sap#5703",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "dotenv-flow": "^3.2.0",
+    "mongodb": "^3.6.2"
+  },
+  "bugs": {
+    "url": "https://github.com/AdamElaoud/kiosk/issues"
+  },
+  "homepage": "https://github.com/AdamElaoud/kiosk#readme"
+}
