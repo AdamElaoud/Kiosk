@@ -1,5 +1,5 @@
 module.exports = {
-    dev: {
+    headmaster: {
         id: "699349409636417588",
         pub: "<@&699349409636417588>"
     },

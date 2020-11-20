@@ -17,17 +17,19 @@ for (const file of commandFiles) {
 	bot.commands.set(command.name, command);
 }
 
-bot.on("ready", () => {
-	bot.user.setActivity(`🐣 Hatching`);
+bot.on("ready", async () => {
+	bot.user.setActivity(`for 🐣 offers`, { type: "WATCHING" });
 	
 	// send online notification if not in devmode
 	if (!Config.devmode) {
-		bot.users.fetch(Config.owner.id).then(
-			function(user) {
-				let date = new Date();
-				user.send("Bot Online! **" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "**");
-			}
-		).catch(err => { console.log(`Error sending message! Error: ${err}`) });
+		try {
+			const owner = await bot.users.fetch(Config.owner.id);
+			let date = new Date();
+			owner.send("Bot Online! **" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "**");
+
+		} catch (err) {
+			console.log(`Error sending message! Error: ${err}`);
+		}
 	}
     
     // send launch notification
@@ -55,6 +57,7 @@ bot.on("message", message => {
 	switch(command) {
 		// player commands
 		case "find":
+		case "search":
 			bot.commands.get("find").execute(bot, message, args);
 			break;
 		case "offer":

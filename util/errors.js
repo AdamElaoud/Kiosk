@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const Channels = require("./channels.js");
 const Format = require("./format.js");
-const Roles = require("./roles.js");
+const Config = require("./config.js");
 
 module.exports = {
     name: "errorlog",
@@ -20,6 +20,6 @@ module.exports = {
             .setFooter(Format.footer.text, Format.footer.image);
 
         bot.channels.cache.get(Channels.errorLog).send(log);
-        bot.channels.cache.get(Channels.errorLog).send(Roles.dev.pub);
+        bot.channels.cache.get(Channels.errorLog).send(Config.owner.pub);
     }
 }
