@@ -32,14 +32,16 @@ module.exports = {
                 "base": false,
                 "free": true,
                 "price": 0,
-                "kiosk": false
+                "kiosk": false,
+                "img": null
             };
 
             const check = new Discord.MessageEmbed()
                 .setColor("#FFCC4D")
                 .setTitle("🐣 **━━━━━━━ YOUR PET ━━━━━━━** 🐣")
-                .setDescription(`**Rank:** ${rank}`
-                                + `\n**Body:** ${body}`
+                .setDescription(`**Rank:** ${offer.rank}`
+                                + `\n**Body:** ${offer.body}`
+                                + `\n**School:** ${offer.school}`
                                 + `\n\nIs that correct?`)
                 .setFooter(Format.footer.text, Format.footer.image);
 
@@ -48,7 +50,7 @@ module.exports = {
 
                 // setup Yes or No menu
                 acceptRejectMenu(prompt, msg.author.id, 
-                    () => collectTalents(bot, msg, offer), 
+                    () => imgSubmission(bot, msg, offer), 
                     () => msg.channel.send(`${Emojis.reject.pub} **Cancelled:** your pet submission has been cancelled`)
                 );
 
@@ -69,6 +71,50 @@ module.exports = {
             
             msg.channel.send(error);
         }
+    }
+}
+
+async function imgSubmission(bot, msg, offer) {
+    try {
+        // message filter
+        const imgFilter = (message) => message.author.id === msg.author.id && message.attachments.size >= 0;
+
+        // collectors (parse for 60 seconds)
+        const imgCollector = msg.channel.createMessageCollector(imgFilter, {time: 60000});
+        
+        const prompt = await msg.channel.send(`Do you have an image of your pet for your submission?`
+                                + `\n\n> *Note: all submissions are reviewed before being posted*`
+                                + `\n> *You **cannot** put special flags on your submission without an image*`);
+
+        // setup Yes or No menu
+        acceptRejectMenu(prompt, msg.author.id, 
+            () => msg.channel.send(`Please send a message with your image`), 
+            async () => {
+                msg.channel.send(`Image submission cancelled`);
+                imgCollector.stop();
+
+                const submit = await msg.channel.send(`Submit your pet?`);
+
+                // setup Yes or No menu
+                acceptRejectMenu(submit, msg.author.id, 
+                    () => msg.channel.send(`${Emojis.accept.pub} **Success:** your pet has been submitted for review`), 
+                    () => msg.channel.send(`${Emojis.reject.pub} **Cancelled:** your pet submission has been cancelled`)
+                );
+            }
+        );
+
+        imgCollector.on("collect",
+            async (m) => {
+                imgCollector.stop();
+                // add image URL to offer
+                offer.img = m.attachments.first().url;
+                // collect talents
+                collectTalents(bot, msg, offer)
+            }
+        );
+
+    } catch (err) {
+        ErrorLog.log(bot, msg, `offer: addding image to submission`, err);
     }
 }
 
@@ -111,6 +157,10 @@ async function collectTalents(bot, msg, offer) {
                                             + `\n**Talents:** ${offer.talents}`
                                             + `\n\nIs that correct?`)
                             .setFooter(Format.footer.text, Format.footer.image);
+                        
+                        // offer has image, add it to embed
+                        if (offer.img !== null)
+                            check.setThumbnail(offer.img);
 
                         const confirm = await m.channel.send(check);
 
@@ -267,7 +317,7 @@ function generateFullPetOffer(offer) {
                         + `\n> Rank: **${offer.rank}**`
                         + `\n> Body: **${offer.body}**`
                         + `\n> Talents: **${offer.talents}**`
-                        + `\n\n**Special Marks**`
+                        + `\n\n**Special Flags**`
                         + `\n> ${Emojis.clean.pub} Clean Pool: ${offer.clean ? "**Yes**" : "**No**"}`
                         + `\n> ${Emojis.max.pub} Max Stats: ${offer.max ? "**Yes**" : "**No**"}`
                         + `\n> ${Emojis.PvP.pub} PvP Pet: ${offer.PvP ? "**Yes**" : "**No**"}`
@@ -277,6 +327,10 @@ function generateFullPetOffer(offer) {
                         + `\n\n*Click the reactions below to change your pet's special flags*`
                         + `\n\n${Emojis.accept.pub} **:** submit ${Format.space(5)} ${Emojis.reject.pub} **:** cancel`)
         .setFooter(Format.footer.text, Format.footer.image);
+
+    // offer has image, add it to embed
+    if (offer.img !== null)
+        pet.setThumbnail(offer.img);
 
     return pet;
 }
