@@ -160,7 +160,7 @@ async function collectTalents(bot, msg, offer) {
                         
                         // offer has image, add it to embed
                         if (offer.img !== null)
-                            check.setThumbnail(offer.img);
+                            check.setImage(offer.img);
 
                         const confirm = await m.channel.send(check);
 
@@ -316,21 +316,23 @@ function generateFullPetOffer(offer) {
         .setDescription(`**Base Information**`
                         + `\n> Rank: **${offer.rank}**`
                         + `\n> Body: **${offer.body}**`
-                        + `\n> Talents: **${offer.talents}**`
-                        + `\n\n**Special Flags**`
-                        + `\n> ${Emojis.clean.pub} Clean Pool: ${offer.clean ? "**Yes**" : "**No**"}`
-                        + `\n> ${Emojis.max.pub} Max Stats: ${offer.max ? "**Yes**" : "**No**"}`
-                        + `\n> ${Emojis.PvP.pub} PvP Pet: ${offer.PvP ? "**Yes**" : "**No**"}`
-                        + `\n> ${Emojis.base.pub} Base Pet: ${offer.base ? "**Yes**" : "**No**"}`
-                        + `\n> ${Emojis.notFree.pub} Free: ${offer.free ? "**Yes**" : "**No**"}`
-                        + `\n> ${Emojis.kiosk.pub} In Kiosk: ${offer.kiosk ? "**Yes**" : "**No**"}`
-                        + `\n\n*Click the reactions below to change your pet's special flags*`
-                        + `\n\n${Emojis.accept.pub} **:** submit ${Format.space(5)} ${Emojis.reject.pub} **:** cancel`)
+                        + `\n> Talents: **${offer.talents}**`)
+        .addField(`Special Flags`,
+                    `> ${Emojis.clean.pub} Clean Pool: ${offer.clean ? "**Yes**" : "**No**"}`
+                    + `\n> ${Emojis.max.pub} Max Stats: ${offer.max ? "**Yes**" : "**No**"}`
+                    + `\n> ${Emojis.PvP.pub} PvP Pet: ${offer.PvP ? "**Yes**" : "**No**"}`, true)
+        .addField("\u200b",
+                    `> ${Emojis.base.pub} Base Pet: ${offer.base ? "**Yes**" : "**No**"}`
+                    + `\n> ${Emojis.notFree.pub} Free: ${offer.free ? "**Yes**" : "**No**"}`
+                    + `\n> ${Emojis.kiosk.pub} In Kiosk: ${offer.kiosk ? "**Yes**" : "**No**"}`, true)
+        .addField("\u200b",
+                    `\n\n*Click the reactions below to change your pet's special flags*`
+                    + `\n\n${Emojis.accept.pub} **:** submit ${Format.space(5)} ${Emojis.reject.pub} **:** cancel`)
         .setFooter(Format.footer.text, Format.footer.image);
 
     // offer has image, add it to embed
     if (offer.img !== null)
-        pet.setThumbnail(offer.img);
+        pet.setImage(offer.img);
 
     return pet;
 }
