@@ -38,8 +38,8 @@ bot.on("ready", async () => {
 
 // command parsing
 bot.on("message", message => {
-	// if another bot sent the message, if it has attachments, or if the prefix wasn't used, do nothing
-	if (message.author.bot || message.attachments.size !== 0 || !message.content.startsWith(Config.prefix()))
+	// if another bot sent the message or if the prefix wasn't used, do nothing
+	if (message.author.bot || !message.content.startsWith(Config.prefix()))
 		return;
 
 	// if in devmode, only respond to dev
@@ -61,7 +61,10 @@ bot.on("message", message => {
 			bot.commands.get("find").execute(bot, message, args);
 			break;
 		case "offer":
-			bot.commands.get("offer").execute(bot, message, args);
+			if (message.attachments.size === 0)
+				bot.commands.get("offer").execute(bot, message, args, null);
+			else
+				bot.commands.get("offer").execute(bot, message, args, message.attachments.first());
 			break;
 		
 

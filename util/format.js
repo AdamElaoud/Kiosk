@@ -4,6 +4,7 @@ module.exports = {
         image: "https://i.imgur.com/c5AskA7.png"
     },
     emptyChar: " ‎",
+    expirationNotice: "*The reaction menu on this message has expired*",
     space(amt) {
         let whitespace = "";
 
